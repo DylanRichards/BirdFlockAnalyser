@@ -1,15 +1,21 @@
 package ca1;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
 
+/**
+ * 
+ * @author Dylan Richards
+ *
+ */
 public class ImageProcessingEngine {
 
-	private Set<Integer> birds;
+	private Set<Integer> birds = new HashSet<>();
 	private int[] arrImage;
 	private int imgWidth, imgHeight;
 
@@ -60,16 +66,40 @@ public class ImageProcessingEngine {
 		}
 
 		addArrtoSet();
+		removeNoise();
 	}
 
 	private void addArrtoSet() {
-		birds = new HashSet<>();
-
 		for (int id = 0; id < arrImage.length; id++) {
 			int parent = find(arrImage, id);
 			if (parent != -1)
 				birds.add(parent);
 		}
+	}
+
+	private void removeNoise() {
+		System.out.println(birds.size() + " birds before noise reduction");
+		
+		// Remove small sets of birds
+		for (Iterator<Integer> i = birds.iterator(); i.hasNext();) {
+		    Integer element = i.next();
+		    
+		    int occurrences = occurrences(element);
+		    double threshold = ((double)occurrences / arrImage.length) * 100.0;
+			if (threshold < 0.055)
+				i.remove();
+		}
+	}
+
+	private int occurrences(int parent) {
+		int count = 0;
+		for (int i = 0; i < arrImage.length; i++) {
+
+			if (parent == find(arrImage, i)) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	private void printRoot() {
