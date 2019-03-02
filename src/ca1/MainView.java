@@ -35,9 +35,6 @@ public class MainView extends Stage {
 		VBox menuBox = new VBox(getMenuBar());
 		root.setTop(menuBox);
 
-		imageView.setFitHeight(scene.getHeight() * 0.9);
-		imageView.setPreserveRatio(true);
-
 		pane.getChildren().add(imageView);
 
 		root.setCenter(pane);
@@ -46,15 +43,14 @@ public class MainView extends Stage {
 		super.show();
 	}
 
-	public void createRectangle(int x, int y, int width, int height, int birdId) {
+	public void createRectangle(Rectangle rectangle, int birdId) {
 		Text birdTag = new Text(String.valueOf(birdId));
-		birdTag.setLayoutX(x);
-		birdTag.setLayoutY(y);
+		birdTag.setLayoutX(rectangle.getX());
+		birdTag.setLayoutY(rectangle.getY());
 
-		Rectangle outerRec = new Rectangle(x, y, width, height);
-		Rectangle innerRec = new Rectangle(x + 3, y + 3, width - 6, height - 6);
+		Rectangle innerRec = new Rectangle(rectangle.getX() + 3, rectangle.getY() + 3, rectangle.getWidth() - 6, rectangle.getHeight() - 6);
 
-		Shape box = Shape.subtract(outerRec, innerRec);
+		Shape box = Shape.subtract(rectangle, innerRec);
 
 		pane.getChildren().addAll(box, birdTag);
 	}

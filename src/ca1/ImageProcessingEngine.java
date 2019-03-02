@@ -7,6 +7,7 @@ import java.util.Set;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * 
@@ -18,6 +19,8 @@ public class ImageProcessingEngine {
 	private Set<Integer> birds = new HashSet<>();
 	private int[] arrImage;
 	private int imgWidth, imgHeight;
+
+	private Rectangle[] birdBoxes;
 
 	public ImageProcessingEngine(Image orgImg, double threshold) {
 		createPixelArr(new BlackWhiteModel(orgImg, threshold).getBlackWhiteImage());
@@ -67,6 +70,7 @@ public class ImageProcessingEngine {
 
 		addArrtoSet();
 		removeNoise();
+		createBirdBoxes();
 	}
 
 	private void addArrtoSet() {
@@ -79,15 +83,48 @@ public class ImageProcessingEngine {
 
 	private void removeNoise() {
 		System.out.println(birds.size() + " birds before noise reduction");
-		
+
 		// Remove small sets of birds
 		for (Iterator<Integer> i = birds.iterator(); i.hasNext();) {
-		    Integer element = i.next();
-		    
-		    int occurrences = occurrences(element);
-		    double threshold = ((double)occurrences / arrImage.length) * 100.0;
+			Integer element = i.next();
+
+			int occurrences = occurrences(element);
+			double threshold = ((double) occurrences / arrImage.length) * 100.0;
 			if (threshold < 0.055)
 				i.remove();
+		}
+	}
+
+	private void createBirdBoxes() {
+		birdBoxes = new Rectangle[birds.size()];
+
+		int index = 0;
+		for (Iterator<Integer> iterator = birds.iterator(); iterator.hasNext();) {
+			Integer element = iterator.next();
+
+			int x = element % getImgWidth();
+			int y = element / getImgWidth();
+
+			int minX = x, maxX = x, minY = y, maxY = y;
+			for (int i = 0; i < arrImage.length; i++) {
+				if (arrImage[i] == -1)
+					continue;
+
+				if (element == find(arrImage, i)) {
+					// It is apart of the current bird check pixel
+					int xLoc = i % getImgWidth();
+					int yLoc = i / getImgWidth();
+
+					minX = (minX > xLoc) ? xLoc : minX;
+					maxX = (maxX < xLoc) ? xLoc : maxX;
+
+					minY = (minY > yLoc) ? yLoc : minY;
+					maxY = (maxY < yLoc) ? yLoc : maxY;
+				}
+
+			}
+
+			birdBoxes[index++] = new Rectangle(minX, minY, maxX - minX, maxY - minY);
 		}
 	}
 
@@ -131,4 +168,7 @@ public class ImageProcessingEngine {
 		return imgWidth;
 	}
 
+	public Rectangle[] getBirdBoxes() {
+		return birdBoxes;
+	}
 }

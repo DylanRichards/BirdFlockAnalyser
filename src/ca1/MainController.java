@@ -1,11 +1,10 @@
 package ca1;
 
-import java.util.Set;
-
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
+import javafx.scene.shape.Rectangle;
 
 /**
  * @author Dylan Richards
@@ -51,11 +50,13 @@ public class MainController implements EventHandler<ActionEvent> {
 
 			iPE.findBirds();
 
-			Set<Integer> birds = iPE.getBirds();
-			int numOfBirds = birds.size();
+			int numOfBirds = iPE.getBirds().size();
 			System.out.println("There are " + numOfBirds + " birds in the picture!");
 
-			birds.forEach(i -> view.createRectangle(i % iPE.getImgWidth(), i / iPE.getImgWidth(), 100, 100, birdNum++));
+			for(Rectangle rect : iPE.getBirdBoxes()) {
+				view.createRectangle(rect, birdNum++);
+			}
+			
 		}
 	}
 
