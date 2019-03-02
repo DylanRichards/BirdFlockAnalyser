@@ -44,15 +44,15 @@ public class MainController implements EventHandler<ActionEvent> {
 			new BlackWhiteController(blackWhiteView, blackWhiteModel);
 		} else if (event.getSource().equals(view.getMenuItemFindBirds())) {
 			view.removeImageOverlays();
-			birdNum = 1;
 
 			ImageProcessingEngine iPE = new ImageProcessingEngine(model.getImage(), bwThreshold);
 
 			iPE.findBirds();
 
 			int numOfBirds = iPE.getBirds().size();
-			System.out.println("There are " + numOfBirds + " birds in the picture!");
+			view.setImageDetails("There are " + numOfBirds + " birds in the picture!");
 
+			birdNum = 1;
 			for(Rectangle rect : iPE.getBirdBoxes()) {
 				view.createRectangle(rect, birdNum++);
 			}

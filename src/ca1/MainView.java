@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -25,19 +26,24 @@ public class MainView extends Stage {
 
 	private Pane pane = new Pane();
 	private ImageView imageView = new ImageView();
+	private TextArea imageDetails = new TextArea();
 
 	public MainView() {
 		super.setTitle("Bird Flock Analyser");
 
 		BorderPane root = new BorderPane();
-		Scene scene = new Scene(root, 1000, 600);
+		Scene scene = new Scene(root, 1200, 675);
 
 		VBox menuBox = new VBox(getMenuBar());
 		root.setTop(menuBox);
 
 		pane.getChildren().add(imageView);
-
 		root.setCenter(pane);
+		
+		imageDetails.setEditable(false);
+		imageDetails.setMaxHeight(50);
+		imageDetails.setMaxWidth(300);
+		root.setRight(imageDetails);
 
 		super.setScene(scene);
 		super.show();
@@ -87,6 +93,10 @@ public class MainView extends Stage {
 
 	public void setImageView(Image image) {
 		this.imageView.setImage(image);
+	}
+	
+	public void setImageDetails(String details) {
+		this.imageDetails.setText(details);
 	}
 
 	public MenuItem[] getAllMenuItems() {
