@@ -50,7 +50,8 @@ public class MainController implements EventHandler<ActionEvent> {
 			iPE.findBirds();
 
 			int numOfBirds = iPE.getBirds().size();
-			view.setImageDetails("There are " + numOfBirds + " birds in the picture!");
+			view.setImageDetails("There are " + numOfBirds + " birds in the picture!" + '\n'
+			+ "The furthest removed bird is: " + iPE.getFurthestRemovedBird());
 
 			birdNum = 1;
 			for(Rectangle rect : iPE.getBirdBoxes()) {

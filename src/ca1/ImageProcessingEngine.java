@@ -85,14 +85,7 @@ public class ImageProcessingEngine {
 		System.out.println(birds.size() + " birds before noise reduction");
 
 		// Remove small sets of birds
-		for (Iterator<Integer> i = birds.iterator(); i.hasNext();) {
-			Integer element = i.next();
-
-			int occurrences = occurrences(element);
-			double threshold = ((double) occurrences / arrImage.length) * 100.0;
-			if (threshold < 0.055)
-				i.remove();
-		}
+		birds.removeIf(b->((double) occurrences(b) / arrImage.length) * 100.0<0.055);
 	}
 
 	private void createBirdBoxes() {
@@ -126,6 +119,38 @@ public class ImageProcessingEngine {
 
 			birdBoxes[index++] = new Rectangle(minX, minY, maxX - minX, maxY - minY);
 		}
+	}
+	
+	public int getFurthestRemovedBird() {
+		double maxDistance = 0;
+		int furthestBird = -1;
+		
+		int birdNum = 1;
+		for (Iterator<Integer> iterator = birds.iterator(); iterator.hasNext();) {
+			Integer bird = iterator.next();
+
+			int x1 = bird % getImgWidth();
+			int y1 = bird / getImgWidth();
+
+			double localDistance = 0;
+			for (Iterator<Integer> iterator2 = birds.iterator(); iterator2.hasNext();) {
+				Integer bird2 = iterator2.next();
+
+				int x2 = bird2 % getImgWidth();
+				int y2 = bird2 / getImgWidth();
+
+				localDistance += Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
+			}
+			
+			if (maxDistance < localDistance) {
+				maxDistance = localDistance;
+				furthestBird = birdNum;
+			}
+			
+			birdNum++;			
+		}
+		
+		return furthestBird;
 	}
 
 	private int occurrences(int parent) {
